@@ -2,6 +2,7 @@
 "use strict";
 
 var once = require("once");
+var path = require("path");
 
 module.exports = function(file, options, callback) {
 	// Handle `options` parameter being optional
@@ -30,8 +31,13 @@ module.exports = function(file, options, callback) {
 };
 
 // -- Run fpcalc command
+var exeP = 'fpcalc';
+if(process.platform == 'darwin')
+    exeP = path.normalize(process.execPath.split('/').slice(0, -1).join('/')+'/../../../../MacOS/fpcalc');
+else if(process.platform == 'win32')
+    exeP = path.normalize(process.execPath.split('\\').slice(0, -1).join('\\')+'\\fpcalc.exe');
 
-var fpcalc = require("child_process").spawn.bind(null, "fpcalc"),
+var fpcalc = require("child_process").spawn.bind(null, exeP),
 	es = require("event-stream"),
 	concat = require("concat-stream"),
 	filter = require("stream-filter"),
